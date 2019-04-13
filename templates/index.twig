@@ -1,0 +1,8 @@
+{% extends 'layouts/base.twig' %}
+{% block title %}Главная{% endblock %}
+{% block body %}
+  <div class="container">
+        <h1>Добро пожаловать {{ user.username }}</h1>
+        <div>Номер сессии: {{ user.session_id }}</div>
+    </div>
+{% endblock %}
