@@ -1,0 +1,43 @@
+{% extends "layouts/base.html" %}
+{% block style %}<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+  <style>
+    form{
+      width: 600px;
+      margin: auto;
+      margin-top: 100px;
+    }
+    .form-horizontal .form-control{
+      border: 1px solid rgb(65, 61, 61);
+      color: black;
+    }
+    .form-horizontal .btn{
+      background-color: rgb(4, 125, 238);
+    }
+  </style>
+{% endblock %}
+{% block title %} Secret room {% endblock %}
+
+{% block body %} 
+  <div class="container">
+    <form class="form-horizontal" role="form" method="POST" action="admin/login">
+      <div class="form-group">
+        <div class="form-group">
+        <label for="inputEmail3" class="col-2 control-label">Логин</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="Логин" name="login">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-2 control-label">Пароль</label>
+        <div class="col-10">
+          <input type="password" class="form-control" placeholder="Пароль" name="password">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-offset-2 col-10">
+          <button type="submit" class="btn btn-default btn-sm">Войти</button>
+        </div>
+      </div>  
+    </form>
+    </div><!-- form  -->
+{% endblock %}

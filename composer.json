@@ -24,10 +24,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\":          "tests/",
-            "Controllers\\":    "controllers/",
-            "Models\\":         "models/",
-            "Middlewares\\":    "middlewares/"
+            "Tests\\"       :   "tests/",
+            "Controllers\\" :   "controllers/",
+            "Models\\"      :   "models/",
+            "Middlewares\\" :   "middlewares/",
+            "Helpers\\"     :   "helpers/"
         }
     },
     "config": {

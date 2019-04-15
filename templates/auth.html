@@ -1,6 +1,6 @@
-{% extends 'layouts/base.twig' %}
+{% extends 'layouts/main.html' %}
 {% block title %}Авторизация{% endblock %}
-{% block body %}
+{% block container %}
 <section class="auth">
   <div class="container">
     <div class="row justify-content-center">
@@ -18,11 +18,11 @@
           <form class="form-horizontal" method="post" action="auth/login">
             <div class="form-group">
               <label for="exampleInputEmail1">username</label>
-              <input type="text" name="username" class="form-control" id="exampleInputEmail1">
+              <input type="text" name="username" required class="form-control" id="exampleInputEmail1">
             </div>
           <div class="form-group">
           <label for="exampleInputPassword1">Пароль</label>
-          <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+          <input type="password" name="password" required class="form-control" id="exampleInputPassword1">
           </div>
           <div class="form-group">
           </div>
@@ -30,7 +30,7 @@
           <button type="submit" class="btn btn-default">Войти</button>
           </div>
           <div class="form-group forgot-pass">
-          <button type="submit" class="btn btn-default">Забыли пароль</button>
+          <a href="auth/forgot_pass" class="btn btn-default">Забыли пароль</a>
           </div>
           </form>
         </div>
@@ -38,15 +38,15 @@
         <form class="form-horizontal" method="post" action="auth/registration">
           <div class="form-group">
             <label for="exampleInputEmail1">Username</label>
-            <input type="text" class="form-control" name="username" id="exampleInputEmail1">
+            <input type="text" class="form-control" required name="username" id="exampleInputEmail1">
           </div>
           <div class="form-group">
             <label for="exampleInputEmail1">Email адрес</label>
-            <input type="email" class="form-control" name="email" id="exampleInputEmail1">
+            <input type="email" class="form-control" required name="email" id="exampleInputEmail1">
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">Пароль</label>
-            <input type="password" class="form-control" name="password" id="exampleInputPassword1">
+            <input type="password" class="form-control" required name="password" id="exampleInputPassword1">
           </div>
           <div class="form-group">
             <button type="submit" class="btn btn-default">Зарегистрироваться</button>
@@ -56,13 +56,6 @@
         
         </div>
       </div>
-      <div class="errors">
-          {% for error in errors %}
-            <div class="error-item">
-                {{error}}
-            </div>
-          {% endfor %}
-        </div>
     </div><!-- /.col-md-offset-3 col-md-6 -->
   </div><!-- /.row -->
   </div><!-- /.container -->

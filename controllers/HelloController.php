@@ -27,9 +27,10 @@ class HelloController extends Controller{
     public function hello(Request $request, Response $response, $args)  {
         $this->token = $_COOKIE['ID'];
         $this->userInfo = $_SESSION[$this->token];
-        $parsedBody = $request->getBody();
-        $this->view->render($response, 'index.twig', [
-             'user' => $this->userInfo
+        $session = $request->getAttribute['session'];
+
+        $this->view->render($response, 'index.html', [
+             'session_id' => $request->getCookieParams()["ID"]
          ]);
  
          return $response;
