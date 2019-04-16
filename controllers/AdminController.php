@@ -12,7 +12,7 @@ class AdminController extends Controller{
         parent::__construct($view);
     }
     /**
-     * Функция 
+     * Вход в админ панель 
      *
      * @param Request $request
      * @param Response $response
@@ -26,29 +26,48 @@ class AdminController extends Controller{
       $admin     = AdminModel::where('login', $login)->get()->first();
       if(isset($admin) && $admin->password === $password){
         $_SESSION["admin"] = ['login' => $admin->login];
-        return $response->withRedirect('/public/admin/users');
+        return $response->withRedirect('/admin/users');
       }
       else{
-        return $response->withRedirect('/public/admin/auth');
+        return $response->withRedirect('/admin/auth');
       }
     }
-    public function main(Request $request, Response $response, $args)
-    {
-      $this->view->render($response, 'admin/layouts/tamplate.html');
-      return $response;
-    }
+    /**
+     * Получение списка пользователей
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param [type] $args
+     * @return void
+     */
     public function users(Request $request, Response $response, $args)
     {
       $users = UserModel::all();
       $this->view->render($response, 'admin/show_users.html', ['users' => $users]);
       return $response;
     }
+    /**
+     * Получение списка сессий
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param [type] $args
+     * @return void
+     */
     public function sessions(Request $request, Response $response, $args)
     {
       $sessions = SessionModel::all();
       $this->view->render($response, 'admin/show_sessions.html', ['sessions' => $sessions]);
       return $response;
     }
+    /**
+     * Удаление пользователя
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param [type] $args
+     * @return void
+     */
     public function delete(Request $request, Response $response, $args){
       $post = $request->getParsedBody();
       $id   = $post['id'];

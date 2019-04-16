@@ -8,7 +8,7 @@ class CheckMiddleware{
   {
     $cookie = $request->getCookieParams()["ID"];
     if(!isset($cookie)) // Проверка существования куки, если ее не существует, отправляем на страницу авторизации
-      return $response->withRedirect('/public/auth');
+      return $response->withRedirect('/auth');
     $response = $next($request, $response);
     return $response;
   }

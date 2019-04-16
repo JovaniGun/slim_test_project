@@ -17,9 +17,9 @@ class HelloController extends Controller{
         parent::__construct($view);
     }
     /**
-     * Undocumented function
+     * Рендер главной страницы
      *
-     * @param Request $req
+     * @param Request $request
      * @param Response $response
      * @param [type] $args
      * @return void

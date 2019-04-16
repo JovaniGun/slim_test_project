@@ -44,7 +44,7 @@
       console.log(id);
       d = "id="+id;
       $.ajax({
-        url: 'http://slim-skeleton/public/admin/users/delete',
+        url: '/admin/users/delete',
         type: "delete",
         data: d,
         error: function(err){

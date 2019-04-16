@@ -15,6 +15,7 @@ class AuthController extends Controller{
         parent::__construct($view);
         $this->userModel = new UserModel();
     }
+
     /**
      * Функция проверки существования пользователя
      *
@@ -23,9 +24,10 @@ class AuthController extends Controller{
      * @return bool
      */
     private function checkUserHave($field,$param){
-      $user = $this->userModel->where($field,$param)->get();
+      $user = UserModel::where($field,$param)->get();
       return count($user) > 0 ? true : false;
     }
+
     /**
      * Функция хэширования пароля
      *
@@ -36,6 +38,14 @@ class AuthController extends Controller{
     private function getPasswordHash($username, $password){
       return md5('pass'.md5($username.md5($password)));
     }
+    
+    /**
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
     public function login(Request $request, Response $response, $args){
       $post = $request->getParsedBody();
       $username = $post['username'];
@@ -47,12 +57,20 @@ class AuthController extends Controller{
           "username"  => $username,
           "email"     => $user->email      
         ];
-        return $response->withRedirect('/public');
+        return $response->withRedirect('/');
       }
       else{
-        return $response->withRedirect('/public/auth');
+        return $response->withRedirect('/auth');
       }
     }
+    /**
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
+
     public function registration(Request $request, Response $response, $args)  {
         $post = $request->getParsedBody();
         $username = $post['username'];
@@ -67,63 +85,94 @@ class AuthController extends Controller{
         }
         if(count($errors)>0){
           
-          return $response->withRedirect('/public/auth');
+          return $response->withRedirect('/auth');
         }
-        else{
-          $newUser = new UserModel();
+          $newUser = new UserModel(); //Создание нового пользователя
           $newUser->username = $username;
           $newUser->email    = $email;
           $newUser->password = $password;
-          $cookieTime = time() + 60 * 60 * 24 * 30;
-          $newUser->save();
+          $newUser->save(); //сохранение в БД
           $response = CookieHelper::addCookie($response,$this->cookieName, $this->cookieName);
-          $user = UserModel::where('username', $username)->get()->first();
           $_SESSION["user"]= [
             "username"  => $username,
             "email"     => $email     
           ];
-          return $response->withRedirect('/public');
-        }        
+          return $response->withRedirect('/'); 
      }
+     /**
+      * Функция гененрирует код для восстановления пароля
+      *
+      * @param string $email
+      * @return string
+      */
      private function generateCode($email){
       $time = time();
       return md5($email.$time);
      }
+     /**
+      * Функция создает ссылку, по которой пользователь может востановить пароль
+      *
+      * @param [type] $email
+      * @param [type] $code
+      * @return void
+      */
      private function generete_restore_link($email, $code){
         
-        $link = 'http://'.$_SERVER['HTTP_HOST']."/public/restore?code=".$code;
+        $link = 'http://'.$_SERVER['HTTP_HOST']."/restore?code=".$code;
         return $link;
      }
+     /**
+      * Отправка ссылки для востановления пароля на почту
+      *
+      * @param Request $request
+      * @param Response $response
+      * @param array $args
+      * @return Response
+      */
      public function restore_pass(Request $request, Response $response, $args){
       $post = $request->getParsedBody();
       $email = $post['email'];
-      $user = UserModel::where('email', $email)->get()->first();
-      $code = $this->generateCode($email);
-      $link = $this->generete_restore_link($user->email,$code);
-      if(isset($user)){
+      if($this->checkUserHave('email', $email)){ // проверяется существует ли пользователь с email 
+        $code = $this->generateCode($email); // генерируется код восстановления 
+        $link = $this->generete_restore_link($email,$code); // генерируется ссылка
         $message = "Код востановления отправлен на почту";
-        $restore = new \Models\RestoreModel();
+        $restore = new \Models\RestoreModel(); // код восстановления для пользователя записывается в БД
         $restore->code = $code;
         $restore->email = $email;
         $restore->save();
-        mail($email,"Востановление пароля", $link);
+        mail($email,"Востановление пароля", $link); // ссылка отправляется на почту
       }
       else{
         $message = "Пользователя с таким email нет";
       }
       $this->view->render($response, 'page.html', ['message' => $message]);
     }
+    /**
+     * Функция вызывается, когда пользователь проходит по ссылке для восстановления
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return void
+     */
     public function fun_restore(Request $request, Response $response, array $args){
-      $get = $request->getQueryParams();
+      $get = $request->getQueryParams(); // получаем код
       $code = $get['code'];
       $restore = \Models\RestoreModel::where('code', $code)->get()->first();
-      if(!isset($restore)){
+      if(!isset($restore)){ // проверка существует ли такой код в БД
         return  $this->view->render($response, 'page.html', ['message' => "Заявки нет"]);
       }
       $_SESSION['restore_email'] = $restore->email;
-      
-      return $this->view->render($response, 'restore_page.html');
+      return $this->view->render($response, 'restore_page.html'); // переход на вьюху для указания нового пароля
     }
+    /**
+     * Обновление нового пароля 
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return 
+     */
     public function change_password(Request $request, Response $response, array $args){
       $post = $request->getParsedBody();
       $email = $_SESSION['restore_email'];
@@ -136,17 +185,23 @@ class AuthController extends Controller{
       $user->save();
       return $this->view->render($response, 'page.html', ['message' => "Пароль успешно обновлен!"]);
     }
+    /**
+     * Выход с аккаунта
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return void
+     */
     public function logout(Request $request, Response $response, array $args){
       $session_id = $request->getCookieParams()[$this->cookieName];
       unset($_SESSION[$session_id]);
       $session = SessionModel::where('session_id', $session_id)->get()->first();
       if(isset($session)){
-        $session->isLogin  = false;
+        $session->isLogin  = false; // записывает в базу, что пользователь вышел с сессии
         $session->save(); 
       }
-
-      $response = CookieHelper::deleteCookie($response,$this->cookieName);
-      
-      return $response->withRedirect('/public/auth');
+      $response = CookieHelper::deleteCookie($response, $this->cookieName);
+      return $response->withRedirect('/auth');
     }
 }
