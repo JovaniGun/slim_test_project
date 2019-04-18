@@ -52,7 +52,7 @@ class AuthController extends Controller{
       $password = $this->getPasswordHash($username, $post['password']);
       $user = UserModel::where('username', $username)->get()->first();
       if(isset($user) && $user->password === $password){
-        $response = CookieHelper::addCookie($response,$this->cookieName, $this->cookieName);
+        //$response = CookieHelper::addCookie($response,$this->cookieName, $this->cookieName);
         $_SESSION["user"]= [
           "username"  => $username,
           "email"     => $user->email      
@@ -92,12 +92,14 @@ class AuthController extends Controller{
           $newUser->email    = $email;
           $newUser->password = $password;
           $newUser->save(); //сохранение в БД
-          $response = CookieHelper::addCookie($response,$this->cookieName, $this->cookieName);
+          //$response = CookieHelper::addCookie($response,$this->cookieName, $this->cookieName);
           $_SESSION["user"]= [
             "username"  => $username,
             "email"     => $email     
           ];
+          var_dump($_SESSION["user"]);
           return $response->withRedirect('/'); 
+
      }
      /**
       * Функция гененрирует код для восстановления пароля

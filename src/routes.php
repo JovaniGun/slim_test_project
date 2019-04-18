@@ -49,4 +49,4 @@ $app->get('/admin/exit',  function(Request $request, Response $response, array $
     return $response->withRedirect('/');
 });
 
-$app->get('/', "HelloController:hello")->add(new CheckMiddleware())->add(new AuthMiddleware());
+$app->get('/', "HelloController:hello")->add(new AuthMiddleware());
