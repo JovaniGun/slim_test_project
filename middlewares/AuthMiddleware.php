@@ -7,7 +7,7 @@ use Models\UserModel;
 use Helpers\CookieHelper;
 class AuthMiddleware{
 /**
- * Undocumented function
+ * Посредник проверяет, существует ли сессия, да - продлевает жизнь куки, нет - записывает новую сессию 
  *
  * @param Request $request
  * @param Response $response
