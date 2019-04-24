@@ -28,7 +28,7 @@ $container['db'] = function ($container) use ($capsule) {
 };
 $container["HelloController"] = function ($c) {
     $view = $c->get('view');
-    $db= $c->get('db');
+    //$db= $c->get('db');
     return new \Controllers\HelloController($view);
 };
 $container["AuthController"] = function ($c) {
@@ -39,6 +39,10 @@ $container["AuthController"] = function ($c) {
 $container["AdminController"] = function ($c) {
     $view = $c->get('view');
     return new \Controllers\AdminController($view);
+};
+$container["RestoreController"] = function ($c) {
+    $view = $c->get('view');
+    return new \Controllers\RestoreController($view);
 };
 // monolog
 $container['logger'] = function ($c) {

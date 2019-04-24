@@ -14,7 +14,7 @@ class ControlMiddleware{
   public function __invoke(Request $request, Response $response, $next)
   {
     $cookie = $request->getCookieParams()["ID"];
-    if($cookie != '')
+    if($cookie)
       return $response->withRedirect('/');
     $response = $next($request, $response);
     return $response;
