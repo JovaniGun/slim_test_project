@@ -32,11 +32,12 @@ class AuthController extends Controller{
       $password = UserHelper::getPasswordHash($username, $post['password']);
       $user = UserModel::where('username', $username)->get()->first();
       if(isset($user) && $user->password === $password){
-        //$response = CookieHelper::addCookie($response,$this->cookieName, $this->cookieName);
-        $_SESSION["user"]= [
-          "username"  => $username,
-          "email"     => $user->email      
-        ];
+        $session      = \Helpers\SessionHelper::setSession($username);
+        $response = CookieHelper::addCookie($response,$this->cookieName, $session->session_id);
+        // $_SESSION["user"]= [
+        //   "username"  => $username,
+        //   "email"     => $user->email      
+        // ];
         return $response->withRedirect('/');
       }
       else{
@@ -55,7 +56,7 @@ class AuthController extends Controller{
         $post = $request->getParsedBody();
         $username = $post['username'];
         $email    = $post['email'];
-        $password = $this->getPasswordHash($username, $post['password']);
+        $password = UserHelper::getPasswordHash($username, $post['password']);
         $errors   = [];
         if(UserHelper::checkUserHave('username',$username)){
           $errors[] = "Пользователь с таким именем уже существует";
@@ -72,12 +73,12 @@ class AuthController extends Controller{
           $newUser->email    = $email;
           $newUser->password = $password;
           $newUser->save(); //сохранение в БД
-          //$response = CookieHelper::addCookie($response,$this->cookieName, $this->cookieName);
-          $_SESSION["user"]= [
-            "username"  => $username,
-            "email"     => $email     
-          ];
-          var_dump($_SESSION["user"]);
+          $session      = \Helpers\SessionHelper::setSession($username);
+          $response = CookieHelper::addCookie($response, $this->cookieName, $session->session_id);
+          // $_SESSION["user"]= [
+          //   "username"  => $username,
+          //   "email"     => $email     
+          // ];
           return $response->withRedirect('/'); 
 
      }

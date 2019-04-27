@@ -169,5 +169,6 @@ a:hover,a:focus{
   .tab{ padding: 40px 20px; }
  }
  .auth{
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
 }

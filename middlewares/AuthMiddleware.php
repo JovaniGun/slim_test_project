@@ -19,20 +19,13 @@ class AuthMiddleware{
     $cookie = $request->getCookieParams()["ID"];
     $localSession = $_SESSION['user'];// сессия существует, когда пользователь только что авторизовался
     if(!isset($cookie) && !isset($localSession)) // Выкидываем на страницу авторизации, так как пользователь не авторизовался
-       return $response->withRedirect('/auth');
-
-    $ip_addr = $_SERVER['REMOTE_ADDR'];  
+       return $response->withRedirect('/auth'); 
     $session = SessionModel::where('session_id', $cookie)->get()->first();
-    if(!isset($session))//если сессии не существует, то записываем данные пользователя с ключем номера куки
-    {
-        $localSession = $_SESSION['user'];
-        $session = new SessionModel();
-        $session->session_id = md5(mt_rand().$localSession['username']);
-        $session->user  = $localSession['username'];
-        $session->ip_addr  = $ip_addr;
-        $session->isLogin  = true;
-        $session->save();  
-    }
+    // if(!isset($session))//если сессии не существует, то записываем данные пользователя с ключем номера куки
+    // {
+    //     $localSession = $_SESSION['user'];
+    //     $session      = \Helpers\SessionHelper::setSession($localSession['username']);  
+    // }
     $request = $request->withAttribute('session', [
         'id'      => $session->session_id,
         'user'    => $session->user,
