@@ -34,10 +34,6 @@ class AuthController extends Controller{
       if(isset($user) && $user->password === $password){
         $session      = \Helpers\SessionHelper::setSession($username);
         $response = CookieHelper::addCookie($response,$this->cookieName, $session->session_id);
-        // $_SESSION["user"]= [
-        //   "username"  => $username,
-        //   "email"     => $user->email      
-        // ];
         return $response->withRedirect('/');
       }
       else{
@@ -75,12 +71,7 @@ class AuthController extends Controller{
           $newUser->save(); //сохранение в БД
           $session      = \Helpers\SessionHelper::setSession($username);
           $response = CookieHelper::addCookie($response, $this->cookieName, $session->session_id);
-          // $_SESSION["user"]= [
-          //   "username"  => $username,
-          //   "email"     => $email     
-          // ];
           return $response->withRedirect('/'); 
-
      }
      
     /**
@@ -93,12 +84,7 @@ class AuthController extends Controller{
      */
     public function logout(Request $request, Response $response, array $args){
       $session_id = $request->getCookieParams()[$this->cookieName];
-      unset($_SESSION[$session_id]);
-      $session = SessionModel::where('session_id', $session_id)->get()->first();
-      if(isset($session)){
-        $session->isLogin  = false; // записывает в базу, что пользователь вышел с сессии
-        $session->save(); 
-      }
+      \Helpers\SessionHelper::closeSession($session_id);
       $response = CookieHelper::deleteCookie($response, $this->cookieName);
       return $response->withRedirect('/auth');
     }

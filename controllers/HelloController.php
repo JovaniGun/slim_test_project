@@ -28,11 +28,10 @@ class HelloController extends Controller{
         $this->cookie_val = $request->getCookieParams()['ID'];
         $this->session = SessionModel::where('session_id', $this->cookie_val)->get()->first();
         $session_id = $this->session->session_id;
-        //$session = $request->getAttribute['session'];
-        //var_dump($session);
         $this->view->render($response, 'index.html', [
              'session_id' => $session_id
          ]);
+
  
          return $response;
      }

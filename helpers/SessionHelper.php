@@ -21,4 +21,18 @@ class SessionHelper
         $session->save(); 
         return $session;
   }
+
+  /**
+   *
+   * @param String $sessionId
+   * @return void
+   */
+  public static function closeSession($sessionId)
+  {
+    $session = SessionModel::where('session_id', $sessionId)->get()->first();
+    if(isset($session)){
+      $session->isLogin  = false; // записывает в базу, что пользователь вышел с сессии
+      $session->save(); 
+    }
+  }
 }

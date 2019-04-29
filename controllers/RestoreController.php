@@ -8,7 +8,9 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Models\UserModel;
 use Helpers\UserHelper;
-
+/**
+ * Контроллер для востановления пароля
+ */
 class RestoreController extends Controller
 {
   /**

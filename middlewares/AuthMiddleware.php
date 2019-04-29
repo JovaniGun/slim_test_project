@@ -13,25 +13,18 @@ class AuthMiddleware{
  * @param Response $response
  * @param [type] $next
  * @return Response $response
+ * 
+ * Сначала проверяется существование куки. 
+ * Сессия хранится в БД и является активной, пока существует куки
+ * далее продливается время жизни куки
  */
   public function __invoke(Request $request, Response $response, $next)
   {
     $cookie = $request->getCookieParams()["ID"];
-    $localSession = $_SESSION['user'];// сессия существует, когда пользователь только что авторизовался
-    if(!isset($cookie) && !isset($localSession)) // Выкидываем на страницу авторизации, так как пользователь не авторизовался
+    if(!isset($cookie)) // Выкидываем на страницу авторизации, так как пользователь не авторизовался
        return $response->withRedirect('/auth'); 
     $session = SessionModel::where('session_id', $cookie)->get()->first();
-    // if(!isset($session))//если сессии не существует, то записываем данные пользователя с ключем номера куки
-    // {
-    //     $localSession = $_SESSION['user'];
-    //     $session      = \Helpers\SessionHelper::setSession($localSession['username']);  
-    // }
-    $request = $request->withAttribute('session', [
-        'id'      => $session->session_id,
-        'user'    => $session->user,
-        'ip_addr' => $session->ip_addr
-      ]);
-      
+    
     /**
      * обновляем время жизни куки
      */
