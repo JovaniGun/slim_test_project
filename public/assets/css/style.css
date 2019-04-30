@@ -172,3 +172,6 @@ a:hover,a:focus{
   min-height: 100vh;
   height: 100%;
 }
+.error{
+  color: #f00;
+}

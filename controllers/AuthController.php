@@ -10,12 +10,13 @@ use Models\UserModel;
 use Models\SessionModel;
 use Helpers\CookieHelper;
 use Helpers\UserHelper;
+use Helpers\Validator;
 
 class AuthController extends Controller{
     private $userModel;
     private $cookieName = "ID";
-    public function __construct($view){
-        parent::__construct($view);
+    public function __construct($di){
+        parent::__construct($di);
         $this->userModel = new UserModel();
     }
     
@@ -29,6 +30,10 @@ class AuthController extends Controller{
     public function login(Request $request, Response $response, $args){
       $post = $request->getParsedBody();
       $username = $post['username'];
+      $password = $post['password'];
+      $errors = Validator::validate(['login'=>$username, 'password'=>$password]);
+      if(count($errors)>0)
+        return $response->withRedirect($this->router->pathFor('auth', [], $errors));
       $password = UserHelper::getPasswordHash($username, $post['password']);
       $user = UserModel::where('username', $username)->get()->first();
       if(isset($user) && $user->password === $password){
@@ -37,7 +42,8 @@ class AuthController extends Controller{
         return $response->withRedirect('/');
       }
       else{
-        return $response->withRedirect('/auth');
+        $errors['authFail'] = "Неверный логин или пароль";
+        return $response->withRedirect($this->router->pathFor('auth', [], $errors));
       }
     }
     /**
@@ -52,8 +58,12 @@ class AuthController extends Controller{
         $post = $request->getParsedBody();
         $username = $post['username'];
         $email    = $post['email'];
-        $password = UserHelper::getPasswordHash($username, $post['password']);
-        $errors   = [];
+        $password = $post['password'];
+        $errors   = Validator::validate(['login' => $username, 'password' => $password, 'email' => $email]);
+        if(count($errors)>0)  
+          return $response->withRedirect($this->router->pathFor('auth', [], $errors));
+        $password = UserHelper::getPasswordHash($username, $password);
+
         if(UserHelper::checkUserHave('username',$username)){
           $errors[] = "Пользователь с таким именем уже существует";
         }
@@ -62,7 +72,7 @@ class AuthController extends Controller{
         }
         if(count($errors)>0){
           
-          return $response->withRedirect('/auth');
+          return $response->withRedirect($this->router->pathFor('auth', [], $errors));
         }
           $newUser = new UserModel(); //Создание нового пользователя
           $newUser->username = $username;

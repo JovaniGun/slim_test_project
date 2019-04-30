@@ -13,8 +13,9 @@ use Middlewares\ControlMiddleware;
 
 $app->get('/auth', function (Request $request, Response $response, array $args)
 {
-    return $this->view->render($response, 'auth.html');
-})->add(new ControlMiddleware()); 
+    $errors = $request->getQueryParams();
+    return $this->view->render($response, 'auth.html', ['errors' => $errors]);
+})->setName('auth')->add(new ControlMiddleware()); 
 $app->post('/auth/registration', "AuthController:registration")->add(new ControlMiddleware());
 
 $app->post('/auth/login', "AuthController:login")->add(new ControlMiddleware());

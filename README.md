@@ -4,6 +4,7 @@
 login: admin
 password: admin
 
-роуты находятся в директории src
+В папке src лежат файл с роутерами(router.php);
+
 
 дамп БД в корне

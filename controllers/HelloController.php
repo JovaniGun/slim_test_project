@@ -13,8 +13,8 @@ class HelloController extends Controller{
      *
      * @param [type] $view
      */
-    public function __construct($view){
-        parent::__construct($view);
+    public function __construct($di){
+        parent::__construct($di);
     }
     /**
      * Рендер главной страницы

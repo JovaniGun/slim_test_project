@@ -8,15 +8,15 @@ use Models\AdminModel;
 use Models\UserModel;
 use Models\SessionModel;
 class AdminController extends Controller{
-    public function __construct($view){
-        parent::__construct($view);
+    public function __construct($di){
+        parent::__construct($di);
     }
     /**
      * Вход в админ панель 
      *
      * @param Request $request
      * @param Response $response
-     * @param [type] $args
+     * @param array $args
      * @return Response $response
      */
     public function login(Request $request, Response $response, $args){

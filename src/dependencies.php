@@ -1,6 +1,5 @@
 <?php
 // DIC configuration
-
 $container = $app->getContainer();
 
 // view renderer
@@ -18,6 +17,10 @@ $container['view'] = function ($c) {
 
     return $view;
 };
+//  $container['router'] = function($c)
+//  {
+//   return new \Slim\Router();   
+//  };
 $capsule = new \Illuminate\Database\Capsule\Manager;
 $capsule->addConnection($container['settings']['db']);
 $capsule->setAsGlobal();
@@ -27,23 +30,18 @@ $container['db'] = function ($container) use ($capsule) {
     return $capsule;
 };
 $container["HelloController"] = function ($c) {
-    $view = $c->get('view');
-    //$db= $c->get('db');
-    return new \Controllers\HelloController($view);
+    return new \Controllers\HelloController($c);
 };
 $container["AuthController"] = function ($c) {
-    $view = $c->get('view');
-    //$db= $c->get('db');
-    return new \Controllers\AuthController($view);
+    return new \Controllers\AuthController($c);
 };
 $container["AdminController"] = function ($c) {
-    $view = $c->get('view');
-    return new \Controllers\AdminController($view);
+    return new \Controllers\AdminController($c);
 };
 $container["RestoreController"] = function ($c) {
-    $view = $c->get('view');
-    return new \Controllers\RestoreController($view);
+    return new \Controllers\RestoreController($c);
 };
+
 // monolog
 $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];
